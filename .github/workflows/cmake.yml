@@ -12,9 +12,6 @@ jobs:
         uses: threeal/cmake-action@v1.3.0
 
       - name: Build 
-        run: cmake --build build
-
-      - name: Install
         run: cmake --build build --config Release --target install -- -j $(nproc)
 
       - name: Test 
