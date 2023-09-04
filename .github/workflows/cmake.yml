@@ -12,7 +12,10 @@ jobs:
         uses: threeal/cmake-action@v1.3.0
 
       - name: Build 
-        run: cmake --build build --config Release --target install -- -j $(nproc)
+        run: cmake -S . -B build
+
+      - name: Gmock
+        run: cmake --build build
 
       - name: Test 
-        run: ctest --test-dir build
+        run: cd build && ctest
