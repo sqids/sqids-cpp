@@ -8,11 +8,14 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3.5.3
 
-      - name: Configure the project
+      - name: Configure
         uses: threeal/cmake-action@v1.3.0
 
-      - name: Build the project
+      - name: Build 
+        run: cmake --build build --config Release --target install -- -j $(nproc)
+
+      - name: Gmock
         run: cmake --build build
 
-      - name: Test the project
-        run: ctest --test-dir build
+      - name: Test 
+        run: cd build && ctest
