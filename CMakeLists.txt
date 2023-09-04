@@ -50,47 +50,23 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/sqids DESTINATION include)
 
 enable_testing()
 
-include(FetchContent)
+add_subdirectory(tests)
 
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG release-1.11.0)
-# For Windows: Prevent overriding the parent project's compiler/linker
-# settings
-set(gtest_force_shared_crt
-    ON
-    CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+option(BUILD_DOCS "Build documentation" OFF)
 
-add_library(GTest::GTest INTERFACE IMPORTED)
-target_link_libraries(GTest::GTest INTERFACE gtest_main)
+if(BUILD_DOCS)
+  find_package(Doxygen)
 
-add_executable(sqids_tests testTests.cpp)
-
-target_link_libraries(sqids_tests PRIVATE GTest::GTest sqids)
-
-target_include_directories(sqids_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-add_test(sqids_tests sqids_tests)
-
-#add_subdirectory(tests)
-
-#option(BUILD_DOCS "Build documentation" OFF)
-#
-#if(BUILD_DOCS)
-#  find_package(Doxygen)
-#
-#  if(DOXYGEN_FOUND)
-#    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in"
-#                   "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile" @ONLY)
-#    add_custom_target(
-#      doxygen ALL
-#      COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-#      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#      COMMENT "Generating Doxygen documentation"
-#      VERBATIM)
-#  else(DOXYGEN_FOUND)
-#    message("Doxygen needs to be installed to generate documentation")
-#  endif(DOXYGEN_FOUND)
-#endif(BUILD_DOCS)
+  if(DOXYGEN_FOUND)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile" @ONLY)
+    add_custom_target(
+      doxygen ALL
+      COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating Doxygen documentation"
+      VERBATIM)
+  else(DOXYGEN_FOUND)
+    message("Doxygen needs to be installed to generate documentation")
+  endif(DOXYGEN_FOUND)
+endif(BUILD_DOCS)
