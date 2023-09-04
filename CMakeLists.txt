@@ -4,7 +4,7 @@ project(
   "sqids"
   VERSION 0.1.0
   DESCRIPTION
-    "A small header-only library that lets you generate YouTube-looking IDs from numbers."
+  "A small header-only library that lets you generate URL-friendly IDs from numbers."
   HOMEPAGE_URL "https://github.com/sqids/sqids-cpp")
 
 include(GNUInstallDirs)
@@ -16,13 +16,6 @@ target_include_directories(
                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_compile_features(sqids INTERFACE cxx_std_11)
-
-install(
-  TARGETS sqids
-  EXPORT ${PROJECT_NAME}_Targets
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 include(CMakePackageConfigHelpers)
 
@@ -37,6 +30,13 @@ configure_package_config_file(
   INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
 
 install(
+  TARGETS sqids
+  EXPORT ${PROJECT_NAME}_Targets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(
   EXPORT ${PROJECT_NAME}_Targets
   FILE ${PROJECT_NAME}Targets.cmake
   NAMESPACE ${PROJECT_NAME}::
@@ -48,52 +48,49 @@ install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/sqids DESTINATION include)
 
-option(BUILD_TESTS "Build tests" ON)
-option(BUILD_DOCS "Build documentation" OFF)
+enable_testing()
 
-if(BUILD_TESTS)
-  include(FetchContent)
+include(FetchContent)
 
-  FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG release-1.11.0)
-  # For Windows: Prevent overriding the parent project's compiler/linker
-  # settings
-  set(gtest_force_shared_crt
-      ON
-      CACHE BOOL "" FORCE)
-  FetchContent_MakeAvailable(googletest)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.11.0)
+# For Windows: Prevent overriding the parent project's compiler/linker
+# settings
+set(gtest_force_shared_crt
+    ON
+    CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
-  enable_testing()
+add_library(GTest::GTest INTERFACE IMPORTED)
+target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-  add_library(GTest::GTest INTERFACE IMPORTED)
-  target_link_libraries(GTest::GTest INTERFACE gtest_main)
+add_executable(sqids_tests testTests.cpp)
 
-  add_executable(
-    sqids-tests
-    tests/alphabetTests.cpp tests/blocklistTests.cpp tests/encodingTests.cpp
-    tests/minLengthTests.cpp tests/uniquesTests.cpp)
+target_link_libraries(sqids_tests PRIVATE GTest::GTest sqids)
 
-  target_link_libraries(sqids-tests PRIVATE GTest::GTest sqids)
+target_include_directories(sqids_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-  add_test(sqids-tests sqids-tests)
+add_test(sqids_tests sqids_tests)
 
-endif(BUILD_TESTS)
+#add_subdirectory(tests)
 
-if(BUILD_DOCS)
-  find_package(Doxygen)
-
-  if(DOXYGEN_FOUND)
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in"
-                   "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile" @ONLY)
-    add_custom_target(
-      doxygen ALL
-      COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      COMMENT "Generating Doxygen documentation"
-      VERBATIM)
-  else(DOXYGEN_FOUND)
-    message("Doxygen needs to be installed to generate documentation")
-  endif(DOXYGEN_FOUND)
-endif(BUILD_DOCS)
+#option(BUILD_DOCS "Build documentation" OFF)
+#
+#if(BUILD_DOCS)
+#  find_package(Doxygen)
+#
+#  if(DOXYGEN_FOUND)
+#    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in"
+#                   "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile" @ONLY)
+#    add_custom_target(
+#      doxygen ALL
+#      COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+#      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#      COMMENT "Generating Doxygen documentation"
+#      VERBATIM)
+#  else(DOXYGEN_FOUND)
+#    message("Doxygen needs to be installed to generate documentation")
+#  endif(DOXYGEN_FOUND)
+#endif(BUILD_DOCS)

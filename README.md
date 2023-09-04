@@ -9,6 +9,9 @@
   <a href="https://isocpp.org">
     <img alt="" src="https://img.shields.io/badge/language-C%2B%2B11-blue.svg" />
   </a>
+  <a href="https://cmake.org/">
+    <img alt="" src="https://img.shields.io/badge/build-CMake-orange" />
+  </a>
 </p>
 
 <p align="center">
