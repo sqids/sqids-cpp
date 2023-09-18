@@ -27,10 +27,14 @@ TEST(AlphabetTest, LongAlphabet) {
     EXPECT_EQ(sqids.decode(sqids.encode(numbers)), numbers);
 }
 
+TEST(AlphabetTest, MultibyteCharacters) {
+    ASSERT_THROW(sqidscxx::Sqids<>({ alphabet: "ë1092" }), std::runtime_error);
+}
+
 TEST(AlphabetTest, RepeatingAlphabetCharacters) {
     ASSERT_THROW(sqidscxx::Sqids<>({ alphabet: "aabcdefg" }), std::runtime_error);
 }
 
 TEST(AlphabetTest, TooShortOfAnAlphabet) {
-    ASSERT_THROW(sqidscxx::Sqids<>({ alphabet: "abcd" }), std::runtime_error);
+    ASSERT_THROW(sqidscxx::Sqids<>({ alphabet: "ab" }), std::runtime_error);
 }

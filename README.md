@@ -35,7 +35,7 @@
 mkdir -p build
 cd build
 cmake ..
-cmake --build . --config Release --target install -- -j $(nproc)
+cmake --build . --config Release --target install
 ```
 
 The last command may need to run as `sudo`.
@@ -71,7 +71,7 @@ int main()
 cmake -S . -B build 
 cmake --build build
 cd build 
-ctest
+ctest -V
 ```
 
 ## License

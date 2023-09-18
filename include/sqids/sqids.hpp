@@ -111,6 +111,8 @@ public:
     static constexpr Numbers numbers(const std::initializer_list<T>& numbers);
     static constexpr Numbers numbers(std::initializer_list<T>&& numbers);
 
+    bool containsMultibyteCharacters(const std::string& input) const;
+
     std::string encode(const Numbers& numbers) const;
     Numbers decode(const std::string& id) const;
 
@@ -202,6 +204,11 @@ Sqids<T>::Sqids(const SqidsOptions& options)
 {
     const size_t alphabetSize = options.alphabet.size();
 
+    // Alphabet cannot contain multibyte characters
+    if (containsMultibyteCharacters(options.alphabet)) {
+        throw std::runtime_error("Alphabet cannot contain multibyte characters.");
+    }
+
     // Check the length of the alphabet
     if (alphabetSize < 3) {
         throw std::runtime_error("Alphabet length must be at least 3.");
@@ -238,6 +245,17 @@ Sqids<T>::Sqids(const SqidsOptions& options)
     }
 
     shuffle(_alphabet);
+}
+
+template<typename T>
+inline bool Sqids<T>::containsMultibyteCharacters(const std::string& input) const
+{
+    for (const unsigned char ch : input) {
+        if ((ch >> 7) == 1) {
+            return true;
+        }
+    }
+    return false;
 }
 
 ///
