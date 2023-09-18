@@ -32,6 +32,7 @@
 ## Installing
 
 ```hash
+mkdir -p build
 cd build
 cmake ..
 cmake --build . --config Release --target install -- -j $(nproc)
@@ -40,6 +41,8 @@ cmake --build . --config Release --target install -- -j $(nproc)
 The last command may need to run as `sudo`.
 
 ## Using the library
+
+A minimal `CMakeLists.txt` configuration:
 
 ```cmake
 project("sqids-example")
