@@ -29,6 +29,48 @@
 
 @todo
 
+## Installing
+
+```hash
+cd build
+cmake ..
+cmake --build . --config Release --target install -- -j $(nproc)
+```
+
+The last command may need to run as `sudo`.
+
+## Using the library
+
+```cmake
+project("sqids-example")
+
+find_package(sqids CONFIG REQUIRED)
+
+add_executable(sqids-example main.cpp)
+target_link_libraries(sqids-example INTERFACE sqids)
+```
+
+```cpp
+#include <iostream>
+#include <sqids/sqids.hpp>
+
+int main() 
+{
+    sqidscxx::Sqids sqids;
+    std::cout << sqids.encode({ 1, 2, 3 }) << std::endl;
+    return 0;
+}
+```
+
+## Running the tests
+
+```bash
+cmake -S . -B build 
+cmake --build build
+cd build 
+ctest
+```
+
 ## License
 
 [MIT](LICENSE)
