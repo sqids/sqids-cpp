@@ -202,8 +202,8 @@ Sqids<T>::Sqids(const SqidsOptions& options)
     const size_t alphabetSize = options.alphabet.size();
 
     // Check the length of the alphabet
-    if (alphabetSize < 5) {
-        throw std::runtime_error("Alphabet length must be at least 5.");
+    if (alphabetSize < 3) {
+        throw std::runtime_error("Alphabet length must be at least 3.");
     }
 
     // Check that all the characters in the alphabet are unique
