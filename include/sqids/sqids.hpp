@@ -29,9 +29,9 @@
 ///
 
 ///
-/// @file  sqids.hpp
-/// @link  https://github.com/sqids/sqids-cpp
-/// @autor Heikki Johannes Hildén
+/// @file sqids.hpp
+/// @link https://github.com/sqids/sqids-cpp
+/// @author Heikki Johannes Hildén
 ///
 #pragma once
 
@@ -53,8 +53,8 @@ namespace sqidscxx
 ///
 /// @brief Options accepted by the `Sqids` constructor.
 //
-/// All options are optional. Fields that aren't explicitly specified fall back
-/// to their default values.
+/// All options are optional. Fields that aren't explicitly specified take
+/// default values.
 ///
 struct SqidsOptions
 {
@@ -100,34 +100,28 @@ template<typename T = uint64_t>
 class Sqids
 {
 public:
-    ///
-    /// Type alias for the numbers vector accepted by encode().
-    ///
-    using Numbers = std::vector<T>;
-
     explicit Sqids(const SqidsOptions& options = {});
     virtual ~Sqids() = default;
 
-    static constexpr Numbers numbers(const std::initializer_list<T>& numbers);
-    static constexpr Numbers numbers(std::initializer_list<T>&& numbers);
+    static constexpr std::vector<T> numbers(const std::initializer_list<T>& numbers);
+    static constexpr std::vector<T> numbers(std::initializer_list<T>&& numbers);
 
     bool containsMultibyteCharacters(const std::string& input) const;
 
-    std::string encode(const Numbers& numbers) const;
-    Numbers decode(const std::string& id) const;
-
-    static constexpr T minValue = 0;
-    static constexpr T maxValue = std::numeric_limits<T>::max();
+    std::string encode(const std::vector<T>& numbers) const;
+    std::vector<T> decode(const std::string& id) const;
 
 private:
+    static constexpr T maxValue = std::numeric_limits<T>::max();
+
     struct Encoder
     {
-        Encoder(const Sqids<T>* _sqids, const Numbers& _numbers);
+        Encoder(const Sqids<T>* _sqids, const std::vector<T>& _numbers);
 
         const Sqids<T>* const sqids;
-        Numbers numbers;
+        std::vector<T> numbers;
 
-        std::string run(bool partitioned = false);
+        std::string run(unsigned int increment = 0);
     };
 
     std::string lowercaseString(const std::string& input) const;
@@ -166,7 +160,7 @@ private:
 template<typename T>
 inline constexpr std::vector<T> Sqids<T>::numbers(const std::initializer_list<T>& values)
 {
-    return Numbers(values);
+    return std::vector<T>(values);
 }
 
 ///
@@ -175,7 +169,7 @@ inline constexpr std::vector<T> Sqids<T>::numbers(const std::initializer_list<T>
 template<typename T>
 inline constexpr std::vector<T> Sqids<T>::numbers(std::initializer_list<T>&& values)
 {
-    return Numbers(std::move(values));
+    return std::vector<T>(std::move(values));
 }
 
 template<typename T>
@@ -191,8 +185,8 @@ inline std::string Sqids<T>::lowercaseString(const std::string& input) const
 /// Sqids constructor.
 ///
 /// @param options  Configuration options for this instance. All options are
-///                 optional. Fields that aren't explicitly specified fall back
-///                 to their default values.
+///                 optional. Fields that aren't explicitly specified take
+///                 default values.
 ///
 ///
 /// @see SqidsOptions
@@ -233,15 +227,17 @@ Sqids<T>::Sqids(const SqidsOptions& options)
             continue;
         }
 
+        const std::string lowercaseWord = lowercaseString(word);
+
         // 2. Remove words that contain characters not in the alphabet
-        if (!std::all_of(lowercaseString(word).cbegin(), word.cend(), [lowercaseAlphabet](char c) {
-            return lowercaseAlphabet.find(c) != std::string::npos;
+        if (!std::all_of(lowercaseWord.cbegin(), lowercaseWord.cend(), [lowercaseAlphabet](auto ch) {
+            return lowercaseAlphabet.find(ch) != std::string::npos;
         })) {
             continue;
         }
 
         // 3. Convert words to lowercase
-        _blocklist.insert(lowercaseString(word));
+        _blocklist.insert(lowercaseWord);
     }
 
     shuffle(_alphabet);
@@ -250,7 +246,7 @@ Sqids<T>::Sqids(const SqidsOptions& options)
 template<typename T>
 inline bool Sqids<T>::containsMultibyteCharacters(const std::string& input) const
 {
-    for (const unsigned char ch : input) {
+    for (unsigned char ch : input) {
         if ((ch >> 7) == 1) {
             return true;
         }
@@ -261,15 +257,15 @@ inline bool Sqids<T>::containsMultibyteCharacters(const std::string& input) cons
 ///
 /// Encode a sequence of integers into an ID.
 ///
-/// @throws std::runtime_error If any of the numbers are out of range, or if an
-///                            an out of range error occurs due to a partition
-///                            number being incremented too far.
+/// TODO
+///
+/// @throws std::runtime_error TODO
 ///
 /// @param numbers The integers to encode into an ID
-/// @return        An encoded ID
+/// @return        The generated ID
 ///
 template<typename T>
-std::string Sqids<T>::encode(const Numbers& numbers) const
+std::string Sqids<T>::encode(const std::vector<T>& numbers) const
 {
     // If no numbers were passed, return an empty string
     if (numbers.empty()) {
@@ -278,9 +274,9 @@ std::string Sqids<T>::encode(const Numbers& numbers) const
 
     // Don't allow out-of-range numbers
     for (auto it = numbers.cbegin(); it != numbers.cend(); ++it) {
-        if (*it < minValue || *it > maxValue) {
+        if (*it < 0 || *it > maxValue) {
             std::ostringstream stream;
-            stream << "Encoding supports numbers between " << minValue << " and " << maxValue;
+            stream << "Encoding supports numbers between 0 and " << maxValue;
 
             throw std::runtime_error(stream.str());
         }
@@ -300,7 +296,7 @@ std::string Sqids<T>::encode(const Numbers& numbers) const
 /// @return    The sequence of integers
 ///
 template<typename T>
-typename Sqids<T>::Numbers Sqids<T>::decode(const std::string& id) const
+typename std::vector<T> Sqids<T>::decode(const std::string& id) const
 {
     // If an empty string is given, return an empty sequence
     if (id.empty()) {
@@ -308,13 +304,13 @@ typename Sqids<T>::Numbers Sqids<T>::decode(const std::string& id) const
     }
 
     // If a character is not in the alphabet, return an empty sequence
-    for (const char ch : id) {
+    for (auto ch : id) {
         if (_alphabet.find(ch) == std::string::npos) {
             return {};
         }
     }
 
-    Numbers numbers;
+    std::vector<T> numbers;
 
     // First character is always the `prefix`
     const auto prefix = id[0];
@@ -325,32 +321,21 @@ typename Sqids<T>::Numbers Sqids<T>::decode(const std::string& id) const
     // Re-arrange alphabet back into it's original form
     std::string alphabet(_alphabet.substr(offset) + _alphabet.substr(0, offset));
 
-    // `partition` character is in second position
-    const auto partition = alphabet[1];
-
-    // Remove reserved `prefix` and `partition` characters from alphabet
-    alphabet.erase(0, 2);
-
+    // Reverse alphabet
+    std::reverse(alphabet.begin(), alphabet.end());
+    
     // Remove the prefix character from the ID since it is not needed anymore
     std::string slicedId(id.substr(1));
 
-    // If this ID contains the `partition` character (between 1st position
-    // and non-last position), throw away everything to the left of it,
-    // include the `partition` character
-    const auto partitionIndex = slicedId.find(partition);
-    if (partitionIndex > 0 && partitionIndex < slicedId.size() - 1) {
-        slicedId.erase(0, partitionIndex + 1);
-        shuffle(alphabet);
-    }
-
     // Decode
     while (slicedId.size() > 0) {
-        const auto separator = alphabet[alphabet.size() - 1];
+        const auto separator = alphabet[0];
 
         std::vector<std::string> chunks;
         size_t start = 0,
                end = 0;
 
+        // We need the first part to the left of the separator to decode the number
         while ((end = slicedId.find(separator, start)) != std::string::npos) {
             chunks.push_back(slicedId.substr(start, end - start));
             start = end + 1;
@@ -358,19 +343,21 @@ typename Sqids<T>::Numbers Sqids<T>::decode(const std::string& id) const
         chunks.push_back(slicedId.substr(start));
 
         if (chunks.size() > 0) {
-            const auto alphabetWithoutSeparator = alphabet.substr(0, alphabet.size() - 1);
-            for (const char ch : chunks[0]) {
-                if (alphabetWithoutSeparator.find(ch) == std::string::npos) {
-                    return {};
-                }
+            if (chunks[0].empty()) {
+                return numbers;
             }
-            numbers.push_back(toNumber(chunks[0], alphabetWithoutSeparator));
 
+            // Decode the number without using the `separator` character
+            numbers.push_back(toNumber(chunks[0], alphabet.substr(1)));
+
+            // If this ID has multiple numbers, shuffle the alphabet, just as
+            // the encoding function did
             if (chunks.size() > 1) {
                 shuffle(alphabet);
             }
         }
 
+        // The `id` is now going to be everything to the right of the `separator`
         slicedId.clear();
         chunks.erase(chunks.begin());
 
@@ -421,7 +408,7 @@ T Sqids<T>::toNumber(const std::string& id, const std::string& alphabet) const
     const size_t alphabetSize = alphabet.size();
     T a = 0;
 
-    for (const char ch : id) {
+    for (auto ch : id) {
         a = a * alphabetSize + alphabet.find(ch);
     }
 
