@@ -27,13 +27,13 @@ TEST(MinLength, Incremental) {
         { 11, "86Rf07xd4zB" },
         { 12, "86Rf07xd4zBm" },
         { 13, "86Rf07xd4zBmi" },
-        { defaultOptions.alphabet.size() + 0, 
+        { defaultOptions.alphabet.size() + 0,
             "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTM" },
-        { defaultOptions.alphabet.size() + 1, 
+        { defaultOptions.alphabet.size() + 1,
             "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMy" },
-        { defaultOptions.alphabet.size() + 2, 
+        { defaultOptions.alphabet.size() + 2,
             "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf" },
-        { defaultOptions.alphabet.size() + 3, 
+        { defaultOptions.alphabet.size() + 3,
             "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf1" }
     };
 
@@ -89,7 +89,7 @@ TEST(MinLength, MinLengths) {
       { 100, 200, 300 },
       { 1'000, 2'000, 3'000 },
       { 1'000'000 },
-      { sqids.maxValue } 
+      { sqids.maxValue }
     };
 
     for (auto minLength : minLengths) {

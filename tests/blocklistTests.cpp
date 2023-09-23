@@ -16,7 +16,7 @@ TEST(Blocklist, IfAnEmptyBlocklistParamPassedDontUseAnyBlocklist) {
 }
 
 TEST(Blocklist, IfANonEmptyBlocklistParamPassedUseOnlyThat) {
-    sqidscxx::Sqids<> sqids({ blocklist: { 
+    sqidscxx::Sqids<> sqids({ blocklist: {
         "ArUO"  // originally encoded [100000]
     } });
 
@@ -31,7 +31,7 @@ TEST(Blocklist, IfANonEmptyBlocklistParamPassedUseOnlyThat) {
 }
 
 TEST(Blocklist, Blocklist) {
-    sqidscxx::Sqids<> sqids({ blocklist: { 
+    sqidscxx::Sqids<> sqids({ blocklist: {
         "JSwXFaosAN",  // Normal result of 1st encoding. Let's block that word on purpose
         "OCjV9JK64o",  // Result of 2nd encoding
         "rBHf",        // Result of 3rd encoding is `4rBHfOiqd3`. Let's block a substring
@@ -60,7 +60,7 @@ TEST(Blocklist, MatchAgainstAShortBlocklistWord) {
 }
 
 TEST(Blocklist, BlocklistFilteringInConstructor) {
-    sqidscxx::Sqids<> sqids({ 
+    sqidscxx::Sqids<> sqids({
         alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         blocklist: { "sxnzkl" }  // Lowercase blocklist in uppercase-only alphabet
     });
@@ -77,7 +77,7 @@ TEST(Blocklist, MaxEncodingAttempts) {
     size_t minLength = 3;
     std::set<std::string> blocklist = { "cab", "abc", "bca" };
 
-    sqidscxx::Sqids<> sqids({ 
+    sqidscxx::Sqids<> sqids({
         alphabet: alphabet,
         minLength: minLength,
         blocklist: blocklist

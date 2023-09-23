@@ -318,7 +318,7 @@ typename std::vector<T> Sqids<T>::decode(const std::string& id) const
 
     // Reverse alphabet
     std::reverse(alphabet.begin(), alphabet.end());
-    
+
     // Remove the prefix character from the ID since it is not needed anymore
     std::string slicedId(id.substr(1));
 
