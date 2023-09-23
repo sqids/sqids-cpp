@@ -65,7 +65,14 @@ int main()
 }
 ```
 
-Output: `86Rf07`
+```bash
+mkdir -p build
+cmake -B build 
+cmake --build build 
+build/sqids-example
+```
+
+Expected output: `86Rf07`
 
 ## Running the tests
 
