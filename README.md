@@ -66,6 +66,8 @@ cmake --build . --config Release --target install
 
 The last command typically needs to run as `sudo`.
 
+By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix (usually `/usr/local/` on Linux/Unix). 
+
 #### Including the library
 
 `main.cpp`:
@@ -82,7 +84,6 @@ int main()
 }
 ```
 
-By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix (usually `/usr/local/` on Linux/Unix). 
 For CMake-based projects, a minimal `CMakeLists.txt` configuration may then consist of the following:
 
 ```cmake
