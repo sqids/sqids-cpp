@@ -252,9 +252,12 @@ inline bool Sqids<T>::containsMultibyteCharacters(const std::string& input) cons
 ///
 /// Encode a sequence of integers into an ID.
 ///
-/// TODO
+/// These are the cases where encoding might fail:
+///   - One of the numbers passed is smaller than 0 or greater than `maxValue`
+///   - An /n/ number of attempts has been made to re-generated the ID, where
+///     /n/ is the length of the alphabet + 1
 ///
-/// @throws std::runtime_error TODO
+/// @throws std::runtime_error When encoding fails
 ///
 /// @param numbers The integers to encode into an ID
 /// @return        The generated ID
