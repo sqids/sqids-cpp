@@ -5,7 +5,7 @@ TEST(Encoding, Simple) {
     sqidscxx::Sqids<> sqids;
 
     const auto numbers(sqids.numbers({ 1, 2, 3 }));
-    const auto id = "8QRLaD";
+    const auto id = "86Rf07";
 
     EXPECT_EQ(sqids.encode(numbers), id);
     EXPECT_EQ(sqids.decode(id), numbers);
@@ -25,16 +25,16 @@ TEST(Encoding, IncrementalNumbers) {
     sqidscxx::Sqids<> sqids;
 
     const IdAndNumbersPairs pairs = {
-        { "bV", { 0 } },
-	{ "U9", { 1 } },
-	{ "g8", { 2 } },
-	{ "Ez", { 3 } },
-	{ "V8", { 4 } },
-	{ "ul", { 5 } },
-	{ "O3", { 6 } },
-	{ "AF", { 7 } },
-	{ "ph", { 8 } },
-	{ "n8", { 9 } }
+        { "bM", { 0 } },
+	{ "Uk", { 1 } },
+	{ "gb", { 2 } },
+	{ "Ef", { 3 } },
+	{ "Vq", { 4 } },
+	{ "uw", { 5 } },
+	{ "OI", { 6 } },
+	{ "AX", { 7 } },
+	{ "p6", { 8 } },
+	{ "nJ", { 9 } }
     };
 
     for (auto pair : pairs) {
@@ -50,16 +50,16 @@ TEST(Encoding, IncrementalNumbersSameIndex0) {
     sqidscxx::Sqids<> sqids;
 
     const IdAndNumbersPairs pairs = {
-        { "SrIu", { 0, 0 } },
-	{ "nZqE", { 0, 1 } },
-	{ "tJyf", { 0, 2 } },
-	{ "e86S", { 0, 3 } },
-	{ "rtC7", { 0, 4 } },
-	{ "sQ8R", { 0, 5 } },
-	{ "uz2n", { 0, 6 } },
-	{ "7Td9", { 0, 7 } },
-	{ "3nWE", { 0, 8 } },
-	{ "mIxM", { 0, 9 } }
+        { "SvIz", { 0, 0 } },
+	{ "n3qa", { 0, 1 } },
+	{ "tryF", { 0, 2 } },
+	{ "eg6q", { 0, 3 } },
+	{ "rSCF", { 0, 4 } },
+	{ "sR8x", { 0, 5 } },
+	{ "uY2M", { 0, 6 } },
+	{ "74dI", { 0, 7 } },
+	{ "30WX", { 0, 8 } },
+	{ "moxr", { 0, 9 } }
     };
 
     for (auto pair : pairs) {
@@ -75,16 +75,16 @@ TEST(Encoding, IncrementalNumbersSameIndex1) {
     sqidscxx::Sqids<> sqids;
 
     const IdAndNumbersPairs pairs = {
-        { "SrIu", { 0, 0 } },
-	{ "nbqh", { 1, 0 } },
-	{ "t4yj", { 2, 0 } },
-	{ "eQ6L", { 3, 0 } },
-	{ "r4Cc", { 4, 0 } },
-	{ "sL82", { 5, 0 } },
-	{ "uo2f", { 6, 0 } },
-	{ "7Zdq", { 7, 0 } },
-	{ "36Wf", { 8, 0 } },
-	{ "m4xT", { 9, 0 } }
+        { "SvIz", { 0, 0 } },
+	{ "nWqP", { 1, 0 } },
+	{ "tSyw", { 2, 0 } },
+	{ "eX68", { 3, 0 } },
+	{ "rxCY", { 4, 0 } },
+	{ "sV8a", { 5, 0 } },
+	{ "uf2K", { 6, 0 } },
+	{ "7Cdk", { 7, 0 } },
+	{ "3aWP", { 8, 0 } },
+	{ "m2xn", { 9, 0 } }
     };
 
     for (auto pair : pairs) {
@@ -130,15 +130,9 @@ TEST(Decoding, DecodingAnIdWithAnInvalidCharacter) {
     EXPECT_EQ(sqids.decode("*"), sqids.numbers({}));
 }
 
-TEST(Decoding, DecodingAnInvalidIdWithARepeatingReservedCharacter) {
-    sqidscxx::Sqids<> sqids;
-
-    EXPECT_EQ(sqids.decode("fff"), sqids.numbers({}));
-}
-
 TEST(Decoding, EncodeOutOfRangeNumbers) {
     sqidscxx::Sqids<int16_t> sqids;
 
-    ASSERT_THROW(sqids.encode({ sqids.minValue - 1 }), std::runtime_error);
+    ASSERT_THROW(sqids.encode({ -1 }), std::runtime_error);
     ASSERT_THROW(sqids.encode({ static_cast<int16_t>(sqids.maxValue + 1) }), std::runtime_error);
 }

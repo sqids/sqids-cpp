@@ -29,8 +29,8 @@
 ///
 
 ///
-/// @file sqids.hpp
-/// @link https://github.com/sqids/sqids-cpp
+/// @file   sqids.hpp
+/// @link   https://github.com/sqids/sqids-cpp
 /// @author Heikki Johannes Hildén
 ///
 #pragma once
@@ -66,7 +66,7 @@ struct SqidsOptions
     ///
     /// The minimum allowed length of IDs.
     ///
-    size_t minLength = 0;
+    uint8_t minLength = 0;
 
     ///
     /// A list of words that must never appear in IDs.
@@ -111,9 +111,9 @@ public:
     std::string encode(const std::vector<T>& numbers) const;
     std::vector<T> decode(const std::string& id) const;
 
-private:
     static constexpr T maxValue = std::numeric_limits<T>::max();
 
+private:
     struct Encoder
     {
         Encoder(const Sqids<T>* _sqids, const std::vector<T>& _numbers);
@@ -211,11 +211,6 @@ Sqids<T>::Sqids(const SqidsOptions& options)
     // Check that all the characters in the alphabet are unique
     if (std::set<char>(options.alphabet.cbegin(), options.alphabet.cend()).size() != alphabetSize) {
         throw std::runtime_error("Alphabet must not contain duplicate characters.");
-    }
-
-    // Minimum length cannot be greater than the alphabet size
-    if (options.minLength > alphabetSize) {
-        throw std::runtime_error("Minimum length cannot be greater than the alphabet size.");
     }
 
     const std::string lowercaseAlphabet(lowercaseString(options.alphabet));
@@ -351,7 +346,7 @@ typename std::vector<T> Sqids<T>::decode(const std::string& id) const
             numbers.push_back(toNumber(chunks[0], alphabet.substr(1)));
 
             // If this ID has multiple numbers, shuffle the alphabet, just as
-            // the encoding function did
+            // the encoding function does
             if (chunks.size() > 1) {
                 shuffle(alphabet);
             }
@@ -448,18 +443,22 @@ bool Sqids<T>::isBlockedId(const std::string& id) const
 }
 
 template<typename T>
-Sqids<T>::Encoder::Encoder(const Sqids<T>* _sqids, const Numbers& _numbers)
+Sqids<T>::Encoder::Encoder(const Sqids<T>* _sqids, const std::vector<T>& _numbers)
   : sqids(_sqids),
     numbers(_numbers)
 {
 }
 
 template<typename T>
-std::string Sqids<T>::Encoder::run(bool partitioned)
+std::string Sqids<T>::Encoder::run(unsigned int increment)
 {
-    // Get a semi-random offset from input numbers
     const size_t alphabetSize = sqids->_alphabet.size();
 
+    if (increment > alphabetSize) {
+        throw std::runtime_error("Reached max attempts to re-generate the ID.");
+    }
+
+    // Get a semi-random offset from input numbers
     auto a = numbers.size();
 
     for (unsigned int i = 0; i < numbers.size(); i++) {
@@ -467,7 +466,7 @@ std::string Sqids<T>::Encoder::run(bool partitioned)
         a += i + sqids->_alphabet[v % alphabetSize];
     }
 
-    const auto offset = a % alphabetSize;
+    const auto offset = (a + increment) % alphabetSize;
 
     // Re-arrange alphabet so that second-half goes in front of the first-half
     std::string alphabet(sqids->_alphabet.substr(offset) + sqids->_alphabet.substr(0, offset));
@@ -475,75 +474,46 @@ std::string Sqids<T>::Encoder::run(bool partitioned)
     // `prefix` is the first character in the generated ID, used for randomization
     const auto prefix = alphabet[0];
 
-    // `partition` is the character used instead of the first separator to
-    // indicate that the first number in the input array is a throwaway
-    // number. This character is used only once to handle blocklist and/or
-    // padding. it's omitted completely in all other cases
-    const auto partition = alphabet[1];
-
-    // The alphabet should not contain the `prefix` or the `partition` character
-    alphabet.erase(0, 2);
+    // Reverse alphabet
+    std::reverse(alphabet.begin(), alphabet.end());
 
     // The final ID will always have the `prefix` character at the beginning
     std::string id = { prefix };
 
     // Encode the input array
     for (auto it = numbers.cbegin(); it != numbers.cend(); ++it) {
-	// The last character of the alphabet is going to be reserved for the `separator`
-	const auto alphabetWithoutSeparator = alphabet.substr(0, alphabet.size() - 1);
+
+	// The first character of the alphabet is going to be reserved for the `separator`
+	const auto alphabetWithoutSeparator = alphabet.substr(1);
 
 	id += sqids->toId(*it, alphabetWithoutSeparator);
 
         // If not the last number
         if (std::next(it) != numbers.cend()) {
             // `separator` character is used to isolate numbers within the ID
-            const auto separator = alphabet[alphabet.size() - 1];
-
-	    // For the barrier, use the `separator` unless this is the first
-            // iteration and the first number is a throwaway number -- then use
-            // the `partition` character
-	    if (partitioned && it == numbers.cbegin()) {
-                id.push_back(partition);
-	    } else {
-                id.push_back(separator);
-	    }
+            id.push_back(alphabet[0]);
 
 	    // Shuffle on every iteration
 	    sqids->shuffle(alphabet);
         }
     }
 
-    // If `minLength` is used and the ID is too short, add a throwaway number
+    // Handle `minLength` requirement, if the ID is too short
     if (sqids->_minLength > id.size()) {
-        // Partitioning is required so we can safely throw away chunk of the ID
-        // during decoding
-        if (!partitioned) {
-            numbers.insert(numbers.begin(), 0);
-            id = run(true);
-        }
+        // Append a separator
+        id.push_back(alphabet[0]);
 
-        // If adding a `partition` number did not make the length meet the
-        // `minLength` requirement, then make the new id this format:
-        // `prefix` character + a slice of the alphabet to make up the missing
-        // length + the rest of the ID without the `prefix` character
-        if (sqids->_minLength > id.size()) {
-            id = id[0] + alphabet.substr(0, sqids->_minLength - id.size()) + id.substr(1);
+        // For decoding: two separators next to each other is what tells us the
+        // rest are junk characters
+        while (sqids->_minLength - id.size() > 0) {
+	    sqids->shuffle(alphabet);
+            id += alphabet.substr(0, std::min(sqids->_minLength - id.size(), alphabet.size()));
         }
     }
 
-    // if ID has a blocked word anywhere, add a throwaway number and start over
+    // if ID has a blocked word anywhere, restart with a +1 increment
     if (sqids->isBlockedId(id)) {
-        if (partitioned) {
-            if (numbers[0] + 1 > sqids->maxValue) {
-                throw std::runtime_error("Ran out of range checking against the blocklist.");
-            } else {
-                numbers[0] += 1;
-            }
-        } else {
-            numbers.insert(numbers.begin(), 0);
-        }
-
-        id = run(true);
+        return run(increment + 1);
     }
 
     return id;

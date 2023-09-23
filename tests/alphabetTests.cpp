@@ -5,14 +5,14 @@ TEST(AlphabetTest, Simple) {
     sqidscxx::Sqids<> sqids({ alphabet: "0123456789abcdef" });
 
     const auto numbers(sqids.numbers({ 1, 2, 3 }));
-    const auto id = "4d9fd2";
+    const auto id = "489158";
 
     EXPECT_EQ(sqids.encode(numbers), id);
     EXPECT_EQ(sqids.decode(id), numbers);
 }
 
 TEST(AlphabetTest, ShortAlphabet) {
-    sqidscxx::Sqids<> sqids({ alphabet: "abcde" });
+    sqidscxx::Sqids<> sqids({ alphabet: "abc" });
 
     const auto numbers(sqids.numbers({ 1, 2, 3 }));
 

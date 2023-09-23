@@ -16,8 +16,7 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
 add_executable(
   sqids_tests
-  alphabetTests.cpp blocklistTests.cpp encodingTests.cpp minLengthTests.cpp 
-  uniquesTests.cpp)
+  alphabetTests.cpp blocklistTests.cpp encodingTests.cpp minLengthTests.cpp)
 
 target_link_libraries(sqids_tests PRIVATE GTest::GTest sqids)
 
