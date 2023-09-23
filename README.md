@@ -66,22 +66,14 @@ cmake --build . --config Release --target install
 
 The last command typically needs to run as `sudo`.
 
-By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix (usually `/usr/local/` on Linux/Unix). 
+(By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix, which is usually `/usr/local/` on Linux/Unix). 
 
 #### Including the library
 
-`main.cpp`:
+In your code, include the header using:
 
 ```cpp
-#include <iostream>
 #include <sqids/sqids.hpp>
-
-int main() 
-{
-    sqidscxx::Sqids sqids;
-    std::cout << sqids.encode({ 1, 2, 3 }) << std::endl;
-    return 0;
-}
 ```
 
 For CMake-based projects, a minimal `CMakeLists.txt` configuration may then consist of the following:
@@ -94,17 +86,6 @@ find_package(sqids CONFIG REQUIRED)
 add_executable(sqids-example main.cpp)
 target_link_libraries(sqids-example INTERFACE sqids)
 ```
-
-To build and run the example program, then do:
-
-```bash
-mkdir -p build
-cmake -B build 
-cmake --build build 
-build/sqids-example
-```
-
-Expected output: `86Rf07`
 
 ### Running the tests
 
