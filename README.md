@@ -66,11 +66,11 @@ cmake --build . --config Release --target install
 
 The last command typically needs to run as `sudo`.
 
-(By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix, which is usually `/usr/local/` on Linux/Unix). 
+(By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix, which is usually `/usr/local/` on Linux/Unix.) 
 
 #### Including the library
 
-In your code, include the header using:
+In your code, include the library with:
 
 ```cpp
 #include <sqids/sqids.hpp>
