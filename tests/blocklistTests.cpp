@@ -74,7 +74,7 @@ TEST(Blocklist, BlocklistFilteringInConstructor) {
 
 TEST(Blocklist, MaxEncodingAttempts) {
     std::string alphabet = "abc";
-    size_t minLength = 3;
+    uint8_t minLength = 3;
     std::set<std::string> blocklist = { "cab", "abc", "bca" };
 
     sqidscxx::Sqids<> sqids({
