@@ -21,37 +21,54 @@
   Sqids (<em>pronounced "squids"</em>) is a small library that lets you generate YouTube-looking IDs from numbers. It's good for link shortening, fast & URL-safe ID generation and decoding back into numbers for quicker database lookups.
 </p>
 
-## Getting started
+Features:
 
-@todo
+- **Encode multiple numbers** - generate short IDs from one or several non-negative numbers
+- **Quick decoding** - easily decode IDs back into numbers
+- **Unique IDs** - generate unique IDs by shuffling the alphabet once
+- **ID padding** - provide minimum length to make IDs more uniform
+- **URL safe** - auto-generated IDs do not contain common profanity
+- **Randomized output** - Sequential input provides nonconsecutive IDs
+- **Many implementations** - Support for [40+ programming languages](https://sqids.org/)
+- **Header-only library** - Simply drop the `include` directory into your project root
 
-## Examples
+## 🧰 Use-cases
 
-@todo
+Good for:
 
-## Installing
+- Generating IDs for public URLs (eg: link shortening)
+- Generating IDs for internal systems (eg: event tracking)
+- Decoding for quicker database lookups (eg: by primary keys)
 
-```hash
+Not good for:
+
+- Sensitive data (this is not an encryption library)
+- User IDs (can be decoded revealing user count)
+
+## 🚀 Getting started
+
+### Installing
+
+> **Note**
+> 🚧 This step is fully optional. The easiest way to use this library is to merge the `include` directory into your project root and include the `sqids.hpp` header:
+> ```cpp
+> #include "include/sqids/sqids.hpp"
+> ```
+
+To install the headers on your system using CMake, run:
+
+```bash
 mkdir -p build
 cd build
 cmake ..
 cmake --build . --config Release --target install
 ```
 
-The last command may need to run as `sudo`.
+The last command typically needs to run as `sudo`.
 
-## Using the library
+#### Including the library
 
-A minimal `CMakeLists.txt` configuration:
-
-```cmake
-project("sqids-example")
-
-find_package(sqids CONFIG REQUIRED)
-
-add_executable(sqids-example main.cpp)
-target_link_libraries(sqids-example INTERFACE sqids)
-```
+`main.cpp`:
 
 ```cpp
 #include <iostream>
@@ -65,6 +82,20 @@ int main()
 }
 ```
 
+By default, the headers will be installed to `include/sqids/`, relative to the CMake install prefix (usually `/usr/local/` on Linux/Unix). 
+For CMake-based projects, a minimal `CMakeLists.txt` configuration may then consist of the following:
+
+```cmake
+project("sqids-example")
+
+find_package(sqids CONFIG REQUIRED)
+
+add_executable(sqids-example main.cpp)
+target_link_libraries(sqids-example INTERFACE sqids)
+```
+
+To build and run the example program, then do:
+
 ```bash
 mkdir -p build
 cmake -B build 
@@ -74,7 +105,7 @@ build/sqids-example
 
 Expected output: `86Rf07`
 
-## Running the tests
+### Running the tests
 
 ```bash
 cmake -S . -B build 
@@ -83,6 +114,16 @@ cd build
 ctest -V
 ```
 
-## License
+## 👩‍💻 Examples
+
+### Encoding:
+
+@todo
+
+### Decoding:
+
+@todo
+
+## 📝 License
 
 [MIT](LICENSE)
