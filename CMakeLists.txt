@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project(
   "sqids"
-  VERSION 0.1.0
+  VERSION 0.2.0
   DESCRIPTION
   "A small header-only library that lets you generate URL-friendly IDs from numbers."
   HOMEPAGE_URL "https://github.com/sqids/sqids-cpp")
