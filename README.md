@@ -65,6 +65,8 @@ int main()
 }
 ```
 
+Output: `86Rf07`
+
 ## Running the tests
 
 ```bash
