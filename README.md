@@ -76,7 +76,7 @@ In your code, include the library with:
 #include <sqids/sqids.hpp>
 ```
 
-For CMake-based projects, a minimal `CMakeLists.txt` configuration may then consist of the following:
+For CMake-based projects, a minimal `CMakeLists.txt` configuration may consist of the following:
 
 ```cmake
 project("sqids-example")
