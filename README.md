@@ -50,7 +50,7 @@ Not good for:
 ### Installing
 
 > **Note**
-> This step is fully optional. The easiest way to use this library is to drop the `include` directory into your project root and directly include the `sqids.hpp` header:
+> This step is fully optional. The easiest way to use this library is to merge the `include` directory into your project root and directly include the `sqids.hpp` header:
 
 > ```cpp
 > #include "include/sqids/sqids.hpp"
