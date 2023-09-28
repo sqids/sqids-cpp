@@ -50,7 +50,8 @@ Not good for:
 ### Installing
 
 > **Note**
-> 🚧 This step is fully optional. The easiest way to use this library is to merge the `include` directory into your project root and directly include the `sqids.hpp` header:
+> This step is fully optional. The easiest way to use this library is to drop the `include` directory into your project root and directly include the `sqids.hpp` header:
+
 > ```cpp
 > #include "include/sqids/sqids.hpp"
 > ```
@@ -100,11 +101,59 @@ ctest -V
 
 ### Encoding:
 
-@todo
+```cpp
+    sqidscxx::Sqids sqids;
+
+    auto id = sqids.encode({ 1, 2, 3 });
+```
 
 ### Decoding:
 
-@todo
+```cpp
+    sqidscxx::Sqids sqids;
+
+    auto numbers = sqids.decode("86Rf07");
+
+    for (auto number : numbers) {
+        std::cout << number << std::endl;
+    }
+```
+
+##### Enforce a *minimum* length for IDs:
+
+```cpp
+    sqidscxx::Sqids sqids({ minLength: 10 });
+
+    auto id = sqids.encode({ 1, 2, 3});
+
+    std::cout << id << std::endl;
+```
+
+Output is `86Rf07xd4z`.
+
+##### Randomize IDs by providing a custom alphabet:
+
+```cpp
+    sqidscxx::Sqids sqids({ alphabet: "FxnXM1kBN6cuhsAvjW3Co7l2RePyY8DwaU04Tzt9fHQrqSVKdpimLGIJOgb5ZE" });
+
+    auto id = sqids.encode({ 1, 2, 3});
+
+    std::cout << id << std::endl;
+```
+
+Output is `B4aajs`.
+
+##### Prevent specific words from appearing anywhere in the auto-generated IDs:
+
+```cpp
+    sqidscxx::Sqids sqids({ blocklist: {{ "86Rf07" }} });
+
+    auto id = sqids.encode({ 1, 2, 3});
+
+    std::cout << id << std::endl;
+```
+
+Output is `se8ojk`.
 
 ## 📝 License
 
