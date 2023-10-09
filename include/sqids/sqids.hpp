@@ -134,7 +134,7 @@ private:
 
     std::string           _alphabet;
     std::set<std::string> _blocklist;
-    size_t                _minLength;
+    uint8_t               _minLength;
 };
 
 ///
