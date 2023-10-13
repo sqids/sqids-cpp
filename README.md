@@ -124,7 +124,7 @@ ctest -V
 ```cpp
     sqidscxx::Sqids sqids({ minLength: 10 });
 
-    auto id = sqids.encode({ 1, 2, 3});
+    auto id = sqids.encode({ 1, 2, 3 });
 
     std::cout << id << std::endl;
 ```
@@ -136,7 +136,7 @@ Output is `86Rf07xd4z`.
 ```cpp
     sqidscxx::Sqids sqids({ alphabet: "FxnXM1kBN6cuhsAvjW3Co7l2RePyY8DwaU04Tzt9fHQrqSVKdpimLGIJOgb5ZE" });
 
-    auto id = sqids.encode({ 1, 2, 3});
+    auto id = sqids.encode({ 1, 2, 3 });
 
     std::cout << id << std::endl;
 ```
@@ -148,7 +148,7 @@ Output is `B4aajs`.
 ```cpp
     sqidscxx::Sqids sqids({ blocklist: {{ "86Rf07" }} });
 
-    auto id = sqids.encode({ 1, 2, 3});
+    auto id = sqids.encode({ 1, 2, 3 });
 
     std::cout << id << std::endl;
 ```
