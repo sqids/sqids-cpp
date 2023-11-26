@@ -9,17 +9,30 @@ TEST(Blocklist, IfNoCustomBlocklistParamUseTheDefaultBlocklist) {
 }
 
 TEST(Blocklist, IfAnEmptyBlocklistParamPassedDontUseAnyBlocklist) {
+#if __GNUC__ <= 10
+    sqidscxx::SqidsOptions sqidsOptions;
+    sqidsOptions.blocklist.clear();
+    sqidscxx::Sqids<> sqids(sqidsOptions);
+#else
     sqidscxx::Sqids<> sqids({ blocklist: {} });
-
+#endif
+    
     EXPECT_EQ(sqids.decode("aho1e"), sqids.numbers({ 4572721 }));
     EXPECT_EQ(sqids.encode({ 4572721 }), "aho1e");
 }
 
 TEST(Blocklist, IfANonEmptyBlocklistParamPassedUseOnlyThat) {
+#if __GNUC__ <= 10
+    sqidscxx::SqidsOptions sqidsOptions;
+    sqidsOptions.blocklist.clear();
+    sqidsOptions.blocklist.insert("ArUO");
+    sqidscxx::Sqids<> sqids(sqidsOptions);
+#else
     sqidscxx::Sqids<> sqids({ blocklist: {
         "ArUO"  // originally encoded [100000]
     } });
-
+#endif
+    
     // Make sure we don't use the default blocklist
     EXPECT_EQ(sqids.decode("aho1e"), sqids.numbers({ 4572721 }));
     EXPECT_EQ(sqids.encode({ 4572721 }), "aho1e");
@@ -54,7 +67,13 @@ TEST(Blocklist, DecodingBlocklistWordsShouldStillWork) {
 }
 
 TEST(Blocklist, MatchAgainstAShortBlocklistWord) {
+#if __GNUC__ <= 10
+    sqidscxx::SqidsOptions sqidsOptions;
+    sqidsOptions.blocklist.insert("pnd");
+    sqidscxx::Sqids<> sqids(sqidsOptions);
+#else
     sqidscxx::Sqids<> sqids({ blocklist: { "pnd" } });
+#endif
 
     EXPECT_EQ(sqids.decode(sqids.encode({ 1000 })), sqids.numbers({ 1000 }));
 }
