@@ -3,18 +3,10 @@
 </a>
 
 <p align="center">
-  <a href="https://github.com/sqids/sqids-cpp/actions/workflows/cmake.yml">
-    <img alt="" src="https://github.com/sqids/sqids-cpp/actions/workflows/cmake.yml/badge.svg" />
-  </a>
-  <a href="https://opensource.org/licenses/MIT">
-    <img alt="" src="https://img.shields.io/badge/license-MIT-yellow.svg" />
-  </a>
-  <a href="https://isocpp.org">
-    <img alt="" src="https://img.shields.io/badge/language-C%2B%2B11-blue.svg" />
-  </a>
-  <a href="https://cmake.org/">
-    <img alt="" src="https://img.shields.io/badge/build-CMake-orange" />
-  </a>
+  <a href="https://github.com/sqids/sqids-cpp/actions/workflows/cmake.yml"><img alt="" src="https://github.com/sqids/sqids-cpp/actions/workflows/cmake.yml/badge.svg" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="" src="https://img.shields.io/badge/license-MIT-yellow.svg" /></a>
+  <a href="https://isocpp.org"><img alt="" src="https://img.shields.io/badge/language-C%2B%2B11-blue.svg" /></a>
+  <a href="https://cmake.org/"><img alt="" src="https://img.shields.io/badge/build-CMake-orange" /></a>
 </p>
 
 <p align="center">
