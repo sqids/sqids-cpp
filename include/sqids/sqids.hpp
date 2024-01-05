@@ -109,7 +109,7 @@ public:
     bool containsMultibyteCharacters(const std::string& input) const;
 
     std::string encode(const std::vector<T>& numbers) const;
-    std::vector<T> decode(const std::string& id) const;
+    std::vector<T> decode(std::string_view id) const;
 
     static constexpr T maxValue = std::numeric_limits<T>::max();
 
@@ -294,7 +294,7 @@ std::string Sqids<T>::encode(const std::vector<T>& numbers) const
 /// @return    The sequence of integers
 ///
 template<typename T>
-typename std::vector<T> Sqids<T>::decode(const std::string& id) const
+typename std::vector<T> Sqids<T>::decode(std::string_view id) const
 {
     // If an empty string is given, return an empty sequence
     if (id.empty()) {
